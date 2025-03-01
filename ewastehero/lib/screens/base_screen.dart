@@ -1,6 +1,7 @@
 import 'package:ewastehero/screens/search_screen.dart';
 import 'package:flutter/material.dart';
 
+import 'bin_list_page.dart';
 import 'bin_page.dart';
 import 'home_screen.dart';
 
@@ -63,7 +64,7 @@ class BaseScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => BinScreen(userId: userId,)),
+                  MaterialPageRoute(builder: (context) => BinsScreen(userId: userId,)),
                 );
               },
             ),
