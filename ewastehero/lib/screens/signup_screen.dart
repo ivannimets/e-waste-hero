@@ -103,7 +103,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       // Navigate to HomeScreen
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => HomeScreen(userId: userId,)),
       );
 
     } catch (e) {

@@ -3,6 +3,9 @@ import 'package:ewastehero/screens/recycler_detail_screen.dart';
 import 'package:flutter/material.dart';// Import the new screen
 
 class SearchScreen extends StatefulWidget {
+  final int userId;
+  SearchScreen({required this.userId});
+
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
@@ -49,6 +52,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
+      userId: widget.userId,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

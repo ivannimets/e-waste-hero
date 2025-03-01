@@ -10,6 +10,10 @@ List<Item> binItems = [
 ];
 
 class BinScreen extends StatefulWidget {
+
+  final int userId;
+  BinScreen({required this.userId});
+
   @override
   BinScreenState createState() {
     return BinScreenState();
@@ -72,6 +76,7 @@ class BinScreenState extends State<BinScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
+      userId: widget.userId,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
