@@ -1,4 +1,5 @@
 import 'package:ewastehero/entites/euser.dart';
+import 'package:ewastehero/screens/bin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:ewastehero/screens/base_screen.dart'; // Import BaseScreen
 import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase package
@@ -33,11 +34,13 @@ class _HomeScreenState extends State<HomeScreen> {
           .eq('user_id', userId)
           .single();
 
-      return EUser(username: response['username'],
-          firstName: response['first_name'],
-          lastName: response['last_name'],
-          email: response['email'],
-          experience: response['experience']);
+      return EUser(
+        username: response['username'],
+        firstName: response['first_name'],
+        lastName: response['last_name'],
+        email: response['email'],
+        experience: response['experience'],
+      );
     } catch (e) {
       throw Exception('Error loading user data: $e');
     }
@@ -172,10 +175,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 SizedBox(height: 30),
 
+                // Friends Section
+                Text(
+                  'Friends: 16',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
+                ),
+                SizedBox(height: 10),
+
                 // Enlarged "Start Recycling" Button
                 ElevatedButton(
                   onPressed: () {
-                    // Add action for button (e.g., navigate to another screen)
+                    // Navigate to the BinScreen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => BinScreen(userId: widget.userId)),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green, // Button background color

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math'; // For generating random price
 
 class RecyclingCenterDetailScreen extends StatelessWidget {
   final Map<String, String> centerData;
@@ -7,6 +8,9 @@ class RecyclingCenterDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Generate a random "Estimated Bin Price" value
+    final randomPrice = (50 + (100 * (0.5 + (0.5 * (new DateTime.now().second / 60))))).toStringAsFixed(2);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(centerData["name"]!),
@@ -15,19 +19,22 @@ class RecyclingCenterDetailScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center, // Centers the content vertically
+          crossAxisAlignment: CrossAxisAlignment.center, // Centers the content horizontally
           children: [
-            // Name
+            // Centered Title (Recycling Center Name)
             Text(
               centerData["name"]!,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.green),
+              textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 20),
 
             // Address
             Text(
               centerData["address"]!,
               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
 
@@ -35,6 +42,7 @@ class RecyclingCenterDetailScreen extends StatelessWidget {
             Text(
               'Phone: ${centerData["phone"]}',
               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
 
@@ -42,6 +50,7 @@ class RecyclingCenterDetailScreen extends StatelessWidget {
             Text(
               'Distance: ${centerData["distance"]}',
               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
 
@@ -49,11 +58,13 @@ class RecyclingCenterDetailScreen extends StatelessWidget {
             Text(
               'Accepted E-Waste Types: ${centerData["acceptedWaste"]}',
               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
 
-            // Verified Status
+            // Verified Status Row
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   centerData["isVerified"] == "true" ? Icons.check_circle : Icons.cancel,
@@ -67,6 +78,24 @@ class RecyclingCenterDetailScreen extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
+
+            // Estimated Bin Price Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.attach_money, color: Colors.green),
+                SizedBox(width: 8),
+                Text(
+                  'Estimated Bin Price: \$${randomPrice}',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 30),
 
             // Action Button (e.g., Call, Directions, etc.)
             ElevatedButton(
