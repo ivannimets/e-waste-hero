@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'home_screen.dart';
+import 'signup_screen.dart'; // Import the SignUpScreen
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -117,11 +118,19 @@ class _SignInScreenState extends State<SignInScreen> {
 
             // Forgot Password & Sign Up Links
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                // TODO: Handle forgot password action
+              },
               child: Text('Forgot Password?', style: TextStyle(color: Colors.green)),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                // Navigate to the SignUpScreen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignUpScreen()),
+                );
+              },
               child: Text("Don't have an account? Sign Up", style: TextStyle(color: Colors.green)),
             ),
           ],
