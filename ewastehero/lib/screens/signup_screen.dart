@@ -1,8 +1,9 @@
+import 'package:ewastehero/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ewastehero/screens/home_screen.dart';
+import 'home_screen.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -27,26 +28,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   /// Create a bin for the user
   Future<int?> createBin(int userId) async {
-    final response = await supabase
-        .from('bin')
-        .insert({'user_id': userId})
-        .select('bin_id')
-        .single();
+    try {
+      final response = await supabase
+          .from('bin')
+          .insert({'user_id': userId})
+          .select('bin_id')
+          .single();
 
-    return response['bin_id'];
+      return response['bin_id'];
+    } catch (e) {
+      print('Error creating bin: $e');
+      return null;
+    }
   }
 
   /// Update user with bin_id
   Future<void> updateUserWithBin(int userId, int binId) async {
-    final response = await supabase
-        .from('users')
-        .update({'bin_id': binId})
-        .match({'user_id': userId});
+    try {
+      final response = await supabase
+          .from('users')
+          .update({'bin_id': binId})
+          .match({'user_id': userId});
 
-    if (response.error != null) {
-      print('Error updating user with bin: ${response.error!.message}');
-    } else {
-      print('User updated with bin_id: $binId');
+      if (response.error != null) {
+        print('Error updating user with bin: ${response.error!.message}');
+      } else {
+        print('User updated with bin_id: $binId');
+      }
+    } catch (e) {
+      print('Error updating user with bin: $e');
     }
   }
 
@@ -61,34 +71,52 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final String email = _emailController.text.trim();
     final String hashedPassword = hashPassword(password);
 
-    // Insert user into Supabase
-    final response = await supabase
-        .from('users')
-        .insert({
-      'username': username,
-      'hashed_password': hashedPassword,
-      'first_name': firstName,
-      'last_name': lastName,
-      'email': email,
-      'experience': 0,
-      'bin_id' : null
-    }).select('user_id').single();
+    // Check for empty fields
+    if (username.isEmpty || password.isEmpty || firstName.isEmpty || lastName.isEmpty || email.isEmpty) {
+      _showError('Please fill in all fields');
+      setState(() => _isLoading = false);
+      return;
+    }
 
-    final int userId = response['user_id'];
+    try {
+      // Insert user into Supabase
+      final response = await supabase
+          .from('users')
+          .insert({
+        'username': username,
+        'hashed_password': hashedPassword,
+        'first_name': firstName,
+        'last_name': lastName,
+        'email': email,
+        'experience': 0,
+        'bin_id': null
+      }).select('user_id').single();
 
-    // Create a bin for the user
-    // final int? binId = await createBin(userId);
-    // if (binId != null) {
-    //   await updateUserWithBin(userId, binId);
-    // }
+      final int userId = response['user_id'];
 
-    // Navigate to HomeScreen
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
+      // Create a bin for the user
+      final int? binId = await createBin(userId);
+      if (binId != null) {
+        await updateUserWithBin(userId, binId);
+      }
+
+      // Navigate to HomeScreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+
+    } catch (e) {
+      _showError('Error signing up: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
     );
-
-    setState(() => _isLoading = false);
   }
 
   @override
@@ -100,7 +128,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // App Title
             Text(
               'E-Waste Hero',
               style: TextStyle(
@@ -187,10 +214,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             SizedBox(height: 15),
 
-            // Sign In Redirect
+            // Sign In Redirect Button
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignInScreen()), // Navigate to Sign In screen
+                );
               },
               child: Text("Already have an account? Sign In", style: TextStyle(color: Colors.green)),
             ),

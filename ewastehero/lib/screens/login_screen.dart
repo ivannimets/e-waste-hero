@@ -1,3 +1,4 @@
+import 'package:ewastehero/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:crypto/crypto.dart';
@@ -121,7 +122,12 @@ class _SignInScreenState extends State<SignInScreen> {
               child: Text('Forgot Password?', style: TextStyle(color: Colors.green)),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignUpScreen()), // Navigate to Sign Up screen
+                );
+              },
               child: Text("Don't have an account? Sign Up", style: TextStyle(color: Colors.green)),
             ),
           ],
