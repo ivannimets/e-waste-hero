@@ -4,7 +4,7 @@ class Item {
 
   Item({required this.name, this.quantity = 1});
 
-  void ChanegeQuantity(int increment) {
+  void ChangeQuantity(int increment) {
     quantity += increment;
   }
 }
