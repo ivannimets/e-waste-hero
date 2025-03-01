@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart'; // Import your HomeScreen
+import 'screens/home_screen.dart';
+import 'screens/login_screen.dart'; // Import your HomeScreen
 
 void main() {
   runApp(EWasteHeroApp()); // Run the app
@@ -15,7 +16,7 @@ class EWasteHeroApp extends StatelessWidget {
         fontFamily: 'Roboto', // Default font family for the app
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomeScreen(),
+      home: SignInScreen(),
     );
   }
 }
