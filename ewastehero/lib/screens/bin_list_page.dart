@@ -1,3 +1,4 @@
+import 'package:ewastehero/entites/bin.dart';
 import 'package:ewastehero/screens/base_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -37,7 +38,7 @@ class BinsScreenState extends State<BinsScreen> {
         .filter('bin_id', 'in', binIds.map((bin) => bin['bin_id']).toList());
 
     setState(() {
-      binsList = bins.map((data) => Bin(id: data['bin_id'], name: data['name'])).toList();
+      binsList = bins.map((data) => Bin(binId: data['bin_id'], name: data['name'])).toList();
     });
   }
 
@@ -134,7 +135,7 @@ class BinsScreenState extends State<BinsScreen> {
                     trailing: IconButton(
                       icon: Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
-                        removeBin(binsList[index].id);
+                        removeBin(binsList[index].binId);
                       },
                     ),
                     onTap: () {

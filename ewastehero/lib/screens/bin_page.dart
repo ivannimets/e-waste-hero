@@ -1,20 +1,10 @@
+import 'package:ewastehero/entites/bin.dart';
 import 'package:ewastehero/screens/base_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../entites/item.dart';
 
-class Bin {
-  int binId;
-
-  Bin({required this.binId});
-
-  factory Bin.fromMap(Map<String, dynamic> data) {
-    return Bin(
-      binId: data['bin_id'],
-    );
-  }
-}
 
 class BinScreen extends StatefulWidget {
   final int userId;
