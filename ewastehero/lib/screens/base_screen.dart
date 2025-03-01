@@ -47,14 +47,7 @@ class BaseScreen extends StatelessWidget {
               },
             ),
             IconButton(
-              icon: Icon(Icons.account_circle),
-              iconSize: 40,
-              onPressed: () {
-                // Navigate to profile screen
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.local_offer),
+              icon: Icon(Icons.recycling_outlined),
               iconSize: 40,
               onPressed: () {
                 // Navigate to rewards screen
