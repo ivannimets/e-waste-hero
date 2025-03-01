@@ -32,31 +32,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final response = await supabase
           .from('bin')
           .insert({'user_id': userId})
-          .select('bin_id')
           .single();
 
       return response['bin_id'];
     } catch (e) {
       print('Error creating bin: $e');
       return null;
-    }
-  }
-
-  /// Update user with bin_id
-  Future<void> updateUserWithBin(int userId, int binId) async {
-    try {
-      final response = await supabase
-          .from('users')
-          .update({'bin_id': binId})
-          .match({'user_id': userId});
-
-      if (response.error != null) {
-        print('Error updating user with bin: ${response.error!.message}');
-      } else {
-        print('User updated with bin_id: $binId');
-      }
-    } catch (e) {
-      print('Error updating user with bin: $e');
     }
   }
 
@@ -88,17 +69,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
         'first_name': firstName,
         'last_name': lastName,
         'email': email,
-        'experience': 0,
-        'bin_id': null
+        'experience': 0
       }).select('user_id').single();
 
       final int userId = response['user_id'];
 
       // Create a bin for the user
       final int? binId = await createBin(userId);
-      if (binId != null) {
-        await updateUserWithBin(userId, binId);
-      }
 
       // Navigate to HomeScreen
       Navigator.pushReplacement(
