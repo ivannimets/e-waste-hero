@@ -1,30 +1,83 @@
 import 'package:flutter/material.dart';
-import 'dart:math'; // For generating random price
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../entites/bin.dart';
+import 'home_screen.dart';
 
-class RecyclingCenterDetailScreen extends StatelessWidget {
+class BinId {
+  int binId;
+
+  BinId({required this.binId});
+
+  factory BinId.fromMap(Map<String, dynamic> data) {
+    return BinId(binId: data['bin_id']);
+  }
+}
+
+class RecyclingCenterDetailScreen extends StatefulWidget {
+  final int userId;
   final Map<String, String> centerData;
 
-  RecyclingCenterDetailScreen({required this.centerData});
+  RecyclingCenterDetailScreen({required this.centerData, required this.userId});
+
+  @override
+  _RecyclingCenterDetailScreenState createState() =>
+      _RecyclingCenterDetailScreenState();
+}
+
+class _RecyclingCenterDetailScreenState extends State<RecyclingCenterDetailScreen> {
+  List<Bin> bins = [];
+  bool isLoading = true; // For showing a loading spinner
+
+  @override
+  void initState() {
+    super.initState();
+    getUserBins();
+  }
+
+  void getUserBins() async {
+    final results = await supabase
+        .from('joining_bin_user')
+        .select('bin_id')
+        .eq('user_id', widget.userId);
+
+    List<BinId> binIds = results.map((binId) => BinId.fromMap(binId)).toList();
+
+    List<Bin> fetchedBins = [];
+
+    for (var binId in binIds) {
+      final _bin = await supabase
+          .from('bin')
+          .select('bin_id, name')
+          .eq('bin_id', binId.binId)
+          .single();
+      fetchedBins.add(Bin.fromMap(_bin));
+    }
+
+    setState(() {
+      bins = fetchedBins;
+      isLoading = false;
+    });
+  }
+
+  String randomPrice() {
+    return (50 + (100 * (0.5 + (0.5 * (DateTime.now().second / 60))))).toStringAsFixed(2);
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Generate a random "Estimated Bin Price" value
-    final randomPrice = (50 + (100 * (0.5 + (0.5 * (new DateTime.now().second / 60))))).toStringAsFixed(2);
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(centerData["name"]!),
+        title: Text(widget.centerData["name"]!),
         backgroundColor: Colors.green,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center, // Centers the content vertically
-          crossAxisAlignment: CrossAxisAlignment.center, // Centers the content horizontally
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Centered Title (Recycling Center Name)
+            // Title (Recycling Center Name)
             Text(
-              centerData["name"]!,
+              widget.centerData["name"]!,
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.green),
               textAlign: TextAlign.center,
             ),
@@ -32,7 +85,7 @@ class RecyclingCenterDetailScreen extends StatelessWidget {
 
             // Address
             Text(
-              centerData["address"]!,
+              widget.centerData["address"]!,
               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
               textAlign: TextAlign.center,
             ),
@@ -40,7 +93,7 @@ class RecyclingCenterDetailScreen extends StatelessWidget {
 
             // Phone Number
             Text(
-              'Phone: ${centerData["phone"]}',
+              'Phone: ${widget.centerData["phone"]}',
               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
               textAlign: TextAlign.center,
             ),
@@ -48,7 +101,7 @@ class RecyclingCenterDetailScreen extends StatelessWidget {
 
             // Distance
             Text(
-              'Distance: ${centerData["distance"]}',
+              'Distance: ${widget.centerData["distance"]}',
               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
               textAlign: TextAlign.center,
             ),
@@ -56,53 +109,74 @@ class RecyclingCenterDetailScreen extends StatelessWidget {
 
             // Accepted E-Waste Types
             Text(
-              'Accepted E-Waste Types: ${centerData["acceptedWaste"]}',
+              'Accepted E-Waste Types: ${widget.centerData["acceptedWaste"]}',
               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
 
-            // Verified Status Row
+            // Verified Status
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  centerData["isVerified"] == "true" ? Icons.check_circle : Icons.cancel,
-                  color: centerData["isVerified"] == "true" ? Colors.green : Colors.red,
+                  widget.centerData["isVerified"] == "true" ? Icons.check_circle : Icons.cancel,
+                  color: widget.centerData["isVerified"] == "true" ? Colors.green : Colors.red,
                 ),
                 SizedBox(width: 8),
                 Text(
-                  centerData["isVerified"] == "true" ? "Verified E-Waste Sidekick" : "Not Verified",
+                  widget.centerData["isVerified"] == "true" ? "Verified E-Waste Sidekick" : "Not Verified",
                   style: TextStyle(fontSize: 18, color: Colors.grey[700]),
                 ),
               ],
             ),
             SizedBox(height: 20),
 
-            // Estimated Bin Price Row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.attach_money, color: Colors.green),
-                SizedBox(width: 8),
-                Text(
-                  'Estimated Bin Price: \$${randomPrice}',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green,
-                  ),
-                ),
-              ],
+            // Estimated Bin Prices Header
+            Text(
+              'Estimated Bin Prices:',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.green),
+            ),
+            SizedBox(height: 10),
+
+            // Bin List (Loading Indicator, ListView, or Empty Message)
+            isLoading
+                ? Center(child: CircularProgressIndicator(color: Colors.green))
+                : bins.isEmpty
+                ? Center(child: Text("No bins available", style: TextStyle(fontSize: 18, color: Colors.grey)))
+                : Expanded(
+              child: ListView.builder(
+                itemCount: bins.length,
+                itemBuilder: (context, index) {
+                  Bin bin = bins[index];
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListTile(
+                      leading: Icon(Icons.delete_outline, color: Colors.green, size: 30), // Bin icon
+                      title: Text(
+                        bin.name,
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      ),
+                      subtitle: Text(
+                        "\$${randomPrice()}",
+                        style: TextStyle(fontSize: 16, color: Colors.green[700], fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
             SizedBox(height: 30),
 
-            // Action Button (e.g., Call, Directions, etc.)
+            // Contact Button
             ElevatedButton(
               onPressed: () {
-                // You can add functionality here to call, get directions, etc.
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Contacting ${centerData["name"]}...')),
+                  SnackBar(content: Text('Contacting ${widget.centerData["name"]}...')),
                 );
               },
               style: ElevatedButton.styleFrom(

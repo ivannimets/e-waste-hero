@@ -320,6 +320,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           MaterialPageRoute(
                             builder: (context) => RecyclingCenterDetailScreen(
                               centerData: center,
+                              userId: widget.userId,
                             ),
                           ),
                         );
