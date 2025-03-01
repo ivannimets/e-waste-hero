@@ -1,14 +1,82 @@
 import 'package:ewastehero/screens/base_screen.dart';
 import 'package:flutter/material.dart';
 
-class BinScreen extends StatelessWidget {
-  final List<String> binItems; // List of bin items
+import '../entites/item.dart';
 
-  BinScreen({this.binItems = const ["Battery", "Testing"]}); // Default to an empty bin
+List<Item> binItems = [
+  Item(name: "batteries", quantity: 5),
+  Item(name: "phone"),
+  Item(name: "wire", quantity: 2)
+];
+
+class BinScreen extends StatefulWidget {
+
+  final int userId;
+  BinScreen({required this.userId});
+
+  @override
+  BinScreenState createState() {
+    return BinScreenState();
+  }
+}
+
+class BinScreenState extends State<BinScreen> {
+  // Function to show dialog to add new item
+  void _showAddItemDialog() {
+    String itemName = '';
+    int itemQuantity = 1;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Add New Item'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(labelText: 'Item Name'),
+                onChanged: (value) {
+                  itemName = value;
+                },
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Quantity'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  itemQuantity = int.tryParse(value) ?? 1; // Default to 1 if invalid input
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog without adding
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (itemName.isNotEmpty) {
+                  setState(() {
+                    binItems.add(Item(name: itemName, quantity: itemQuantity));
+                  });
+                  Navigator.pop(context); // Close the dialog
+                }
+              },
+              child: Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
+      userId: widget.userId,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -44,14 +112,47 @@ class BinScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return ListTile(
                     leading: Icon(Icons.recycling, color: Colors.green),
-                    title: Text(
-                      binItems[index],
-                      style: TextStyle(fontSize: 18),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "${binItems[index].name}",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        Row(
+                          children: [
+                            if (binItems[index].quantity > 1)
+                              IconButton(
+                                icon: Icon(Icons.remove,
+                                    color: Colors.green),
+                                onPressed: () {
+                                  setState(() {
+                                    binItems[index].ChanegeQuantity(-1);
+                                  });
+                                },
+                              ),
+                            Text(
+                              "${binItems[index].quantity}",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.add, color: Colors.green),
+                              onPressed: () {
+                                setState(() {
+                                  binItems[index].ChanegeQuantity(1);
+                                });
+                              },
+                            ),
+                          ],
+                        )
+                      ],
                     ),
                     trailing: IconButton(
                       icon: Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
-                        // TODO: Implement delete functionality
+                        setState(() {
+                          binItems.removeAt(index);
+                        });
                       },
                     ),
                   );
@@ -61,11 +162,9 @@ class BinScreen extends StatelessWidget {
 
             SizedBox(height: 20),
 
-            // Button to Add Items (For Future Implementation)
+            // Button to Add Items
             ElevatedButton(
-              onPressed: () {
-                // TODO: Add functionality to add items to the bin
-              },
+              onPressed: _showAddItemDialog, // Show the dialog to add an item
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green, // Button color
                 foregroundColor: Colors.white, // Text color

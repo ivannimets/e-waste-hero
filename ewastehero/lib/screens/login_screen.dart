@@ -1,6 +1,9 @@
-import 'package:ewastehero/screens/base_screen.dart';
-import 'package:ewastehero/screens/home_screen.dart';
+import 'package:ewastehero/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
+import 'home_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -10,78 +13,89 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final supabase = Supabase.instance.client; // Access Supabase
 
-  // Hardcoded credentials for validation
-  final String username = "admin";
-  final String password = "password";
+  Future<void> _signIn() async {
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text.trim();
 
-  void _signIn() {
-    if (_usernameController.text == username &&
-        _passwordController.text == password) {
-      // Navigate to HomeScreen if credentials are correct
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
-    } else {
-      // Show error if credentials are incorrect
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Invalid username or password'),
-          backgroundColor: Colors.red,
-        ),
-      );
+    if (username.isEmpty || password.isEmpty) {
+      _showError('Please fill in all fields');
+      return;
     }
+
+    // Hash password using SHA-256
+    final hashedPassword = sha256.convert(utf8.encode(password)).toString();
+
+    try {
+      // Query user from the database
+      final response = await supabase
+          .from('users')
+          .select('user_id, username, hashed_password')
+          .eq('username', username)
+          .maybeSingle();
+
+      if (response == null) {
+        _showError('User not found');
+        return;
+      }
+
+      final dbPassword = response['hashed_password'];
+
+      // Compare hashed passwords
+      if (dbPassword == hashedPassword) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen(userId: response['user_id'])),
+        );
+      } else {
+        _showError('Incorrect password');
+      }
+    } catch (e) {
+      _showError('Error signing in: $e');
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BaseScreen(
+    return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Welcome Text
             Text(
-              'Welcome Back!',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
-              ),
+              'E-Waste Hero',
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.green),
             ),
-            SizedBox(height: 10),
-            Text(
-              'Sign in to continue',
-              style: TextStyle(fontSize: 18, color: Colors.grey[700]),
-            ),
-            SizedBox(height: 30),
+            SizedBox(height: 40),
 
-            // Username Input Field
+            // Username Field
             TextField(
               controller: _usernameController,
               decoration: InputDecoration(
                 labelText: 'Username',
                 prefixIcon: Icon(Icons.person, color: Colors.green),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
             SizedBox(height: 20),
 
-            // Password Input Field
+            // Password Field
             TextField(
               controller: _passwordController,
-              obscureText: true, // Hide password
+              obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Password',
                 prefixIcon: Icon(Icons.lock, color: Colors.green),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
             SizedBox(height: 20),
@@ -92,39 +106,29 @@ class _SignInScreenState extends State<SignInScreen> {
               child: ElevatedButton(
                 onPressed: _signIn,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green, // Button color
-                  foregroundColor: Colors.white, // Text color
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
                   padding: EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: Text(
-                  'Sign In',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                child: Text('Sign In', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
             ),
             SizedBox(height: 15),
 
             // Forgot Password & Sign Up Links
             TextButton(
-              onPressed: () {
-                // TODO: Navigate to Forgot Password screen
-              },
-              child: Text(
-                'Forgot Password?',
-                style: TextStyle(color: Colors.green),
-              ),
+              onPressed: () {},
+              child: Text('Forgot Password?', style: TextStyle(color: Colors.green)),
             ),
             TextButton(
               onPressed: () {
-                // TODO: Navigate to Sign Up screen
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignUpScreen()), // Navigate to Sign Up screen
+                );
               },
-              child: Text(
-                "Don't have an account? Sign Up",
-                style: TextStyle(color: Colors.green),
-              ),
+              child: Text("Don't have an account? Sign Up", style: TextStyle(color: Colors.green)),
             ),
           ],
         ),

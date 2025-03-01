@@ -1,3 +1,4 @@
+import 'package:ewastehero/screens/search_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'bin_page.dart';
@@ -5,9 +6,10 @@ import 'home_screen.dart';
 
 class BaseScreen extends StatelessWidget {
   final Widget body;
+  final int userId;
 
   // Constructor accepts the body widget to customize content
-  BaseScreen({required this.body});
+  BaseScreen({required this.userId, required this.body});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,7 @@ class BaseScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                  MaterialPageRoute(builder: (context) => HomeScreen(userId: userId,)),
                 );
               },
             ),
@@ -49,7 +51,10 @@ class BaseScreen extends StatelessWidget {
               icon: Icon(Icons.search),
               iconSize: 40,
               onPressed: () {
-                // Navigate to search screen
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SearchScreen(userId: userId,)),
+                );
               },
             ),
             IconButton(
@@ -58,7 +63,7 @@ class BaseScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => BinScreen()),
+                  MaterialPageRoute(builder: (context) => BinScreen(userId: userId,)),
                 );
               },
             ),
