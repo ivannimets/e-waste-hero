@@ -1,32 +1,31 @@
-import 'package:ewastehero/screens/signup_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:ewastehero/screens/home_screen.dart';
+import 'package:flutter/material.dart';
 
-class SignInScreen extends StatefulWidget {
+class SignUpScreen extends StatefulWidget {
   @override
-  _SignInScreenState createState() => _SignInScreenState();
+  _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   // Placeholder variables for future database connection
   String username = '';
   String password = '';
+  String confirmPassword = '';
 
-  void _signIn() {
-    // Placeholder for future database validation
-    // Connect to the database and verify the credentials
+  void _signUp() {
+    if (password == confirmPassword) {
+      // Placeholder for future database sign-up functionality
+      // Connect to the database and save the user info
 
-    if (username == "admin" && password == "password") {
-      // Navigate to HomeScreen if credentials are correct
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => HomeScreen()), // Redirect to HomeScreen on success
       );
     } else {
-      // Show error if credentials are incorrect
+      // Show error if passwords do not match
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Invalid username or password'),
+          content: Text('Passwords do not match'),
           backgroundColor: Colors.red,
         ),
       );
@@ -56,7 +55,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
             // Welcome Text
             Text(
-              'Welcome Back!',
+              'Create a New Account',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -65,7 +64,7 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
             SizedBox(height: 10),
             Text(
-              'Sign in to continue',
+              'Fill in the details to sign up',
               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
             ),
             SizedBox(height: 30),
@@ -101,11 +100,27 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
             SizedBox(height: 20),
 
-            // Sign In Button
+            // Confirm Password Input Field
+            TextField(
+              onChanged: (value) {
+                confirmPassword = value; // Capture the confirm password
+              },
+              obscureText: true, // Hide password
+              decoration: InputDecoration(
+                labelText: 'Confirm Password',
+                prefixIcon: Icon(Icons.lock, color: Colors.green),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+
+            // Sign Up Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _signIn,
+                onPressed: _signUp,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green, // Button color
                   foregroundColor: Colors.white, // Text color
@@ -115,33 +130,21 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
                 child: Text(
-                  'Sign In',
+                  'Sign Up',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
             SizedBox(height: 15),
 
-            // Forgot Password & Sign Up Links
+            // Sign In Link
             TextButton(
               onPressed: () {
-                // TODO: Navigate to Forgot Password screen
+                // Navigate back to Sign In screen
+                Navigator.pop(context);
               },
               child: Text(
-                'Forgot Password?',
-                style: TextStyle(color: Colors.green),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                // Navigate to Sign Up screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignUpScreen()),
-                );
-              },
-              child: Text(
-                "Don't have an account? Sign Up",
+                'Already have an account? Sign In',
                 style: TextStyle(color: Colors.green),
               ),
             ),
