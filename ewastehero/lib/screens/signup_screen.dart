@@ -54,12 +54,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> _signUp() async {
     setState(() => _isLoading = true);
 
-    final username = _usernameController.text.trim();
-    final password = _passwordController.text.trim();
-    final firstName = _firstNameController.text.trim();
-    final lastName = _lastNameController.text.trim();
-    final email = _emailController.text.trim();
-    final hashedPassword = hashPassword(password);
+    final String username = _usernameController.text.trim();
+    final String password = _passwordController.text.trim();
+    final String firstName = _firstNameController.text.trim();
+    final String lastName = _lastNameController.text.trim();
+    final String email = _emailController.text.trim();
+    final String hashedPassword = hashPassword(password);
 
     // Insert user into Supabase
     final response = await supabase
@@ -71,15 +71,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'last_name': lastName,
       'email': email,
       'experience': 0,
+      'bin_id' : null
     }).select('user_id').single();
 
     final int userId = response['user_id'];
 
     // Create a bin for the user
-    final int? binId = await createBin(userId);
-    if (binId != null) {
-      await updateUserWithBin(userId, binId);
-    }
+    // final int? binId = await createBin(userId);
+    // if (binId != null) {
+    //   await updateUserWithBin(userId, binId);
+    // }
 
     // Navigate to HomeScreen
     Navigator.pushReplacement(
