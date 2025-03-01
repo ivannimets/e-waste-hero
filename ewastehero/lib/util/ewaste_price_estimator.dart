@@ -1,9 +1,10 @@
 import 'dart:convert';
+import 'package:ewastehero/main.dart';
 import 'package:http/http.dart' as http;
 
 class EWastePriceEstimator {
-  static const String apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3aXptZWppYXh4anVudW5lcHJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA4MTM4MjMsImV4cCI6MjA1NjM4OTgyM30.hKNhP69T0FjvOFwLvmw6iSTKNJiw_wdQ-LEinDHreB8';
   static const String apiUrl = 'https://api.openai.com/v1/chat/completions';
+  static String apiKey = Config.openKey;
 
   static Future<double> estimatePrice(String itemDescription) async {
     try {

@@ -22,6 +22,7 @@ void main() async {
 class Config {
   static String supabaseUrl = '';
   static String supabaseKey = '';
+  static String openKey = '';
 
   static Future<void> loadConfig() async {
     // Load the config.json file from assets
@@ -33,6 +34,7 @@ class Config {
     // Set the Supabase credentials from the config file
     supabaseUrl = configMap['supabaseUrl'];
     supabaseKey = configMap['supabaseKey'];
+    openKey = configMap['openKey'];
   }
 }
 
