@@ -1,3 +1,4 @@
+import 'package:ewastehero/screens/search_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'bin_page.dart';
@@ -49,7 +50,10 @@ class BaseScreen extends StatelessWidget {
               icon: Icon(Icons.search),
               iconSize: 40,
               onPressed: () {
-                // Navigate to search screen
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SearchScreen()),
+                );
               },
             ),
             IconButton(
