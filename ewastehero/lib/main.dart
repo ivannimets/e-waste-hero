@@ -17,7 +17,7 @@ class EWasteHeroApp extends StatelessWidget {
         fontFamily: 'Roboto', // Default font family for the app
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: BinScreen(),
+      home: SignInScreen(),
     );
   }
 }
