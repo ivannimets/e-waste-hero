@@ -1,5 +1,10 @@
-import 'package:ewastehero/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:ewastehero/screens/home_screen.dart';
+
+final supabase = Supabase.instance.client;
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -7,111 +12,156 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  // Placeholder variables for future database connection
-  String username = '';
-  String password = '';
-  String confirmPassword = '';
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
-  void _signUp() {
-    if (password == confirmPassword) {
-      // Placeholder for future database sign-up functionality
-      // Connect to the database and save the user info
+  bool _isLoading = false;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()), // Redirect to HomeScreen on success
-      );
+  /// Hash the password using SHA-256
+  String hashPassword(String password) {
+    return sha256.convert(utf8.encode(password)).toString();
+  }
+
+  /// Create a bin for the user
+  Future<int?> createBin(int userId) async {
+    final response = await supabase
+        .from('bins')
+        .insert({'user_id': userId})
+        .select('bin_id')
+        .single();
+
+    return response['bin_id'];
+  }
+
+  /// Update user with bin_id
+  Future<void> updateUserWithBin(int userId, int binId) async {
+    final response = await supabase
+        .from('users')
+        .update({'bin_id': binId})
+        .match({'user_id': userId});
+
+    if (response.error != null) {
+      print('Error updating user with bin: ${response.error!.message}');
     } else {
-      // Show error if passwords do not match
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Passwords do not match'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      print('User updated with bin_id: $binId');
     }
+  }
+
+  /// Sign up the user
+  Future<void> _signUp() async {
+    setState(() => _isLoading = true);
+
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text.trim();
+    final firstName = _firstNameController.text.trim();
+    final lastName = _lastNameController.text.trim();
+    final email = _emailController.text.trim();
+    final hashedPassword = hashPassword(password);
+
+    // Insert user into Supabase
+    final response = await supabase
+        .from('users')
+        .insert({
+      'username': username,
+      'hashed_password': hashedPassword,
+      'first_name': firstName,
+      'last_name': lastName,
+      'email': email,
+      'experience': 0,
+    }).select('user_id').single();
+
+    final int userId = response['user_id'];
+
+    // Create a bin for the user
+    final int? binId = await createBin(userId);
+    if (binId != null) {
+      await updateUserWithBin(userId, binId);
+    }
+
+    // Navigate to HomeScreen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen()),
+    );
+
+    setState(() => _isLoading = false);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null, // No appBar
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // e-waste hero text
+            // App Title
             Text(
-              'e-waste hero',
+              'E-Waste Hero',
               style: TextStyle(
-                fontSize: 70,
+                fontSize: 32,
                 fontWeight: FontWeight.bold,
                 color: Colors.green,
               ),
             ),
-            SizedBox(height: 50),
+            SizedBox(height: 20),
 
-            // Welcome Text
-            Text(
-              'Create a New Account',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Fill in the details to sign up',
-              style: TextStyle(fontSize: 18, color: Colors.grey[700]),
-            ),
-            SizedBox(height: 30),
-
-            // Username Input Field
+            // Username Field
             TextField(
-              onChanged: (value) {
-                username = value; // Capture the username
-              },
+              controller: _usernameController,
               decoration: InputDecoration(
                 labelText: 'Username',
                 prefixIcon: Icon(Icons.person, color: Colors.green),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 15),
 
-            // Password Input Field
+            // First Name Field
             TextField(
-              onChanged: (value) {
-                password = value; // Capture the password
-              },
-              obscureText: true, // Hide password
+              controller: _firstNameController,
+              decoration: InputDecoration(
+                labelText: 'First Name',
+                prefixIcon: Icon(Icons.account_circle, color: Colors.green),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+            SizedBox(height: 15),
+
+            // Last Name Field
+            TextField(
+              controller: _lastNameController,
+              decoration: InputDecoration(
+                labelText: 'Last Name',
+                prefixIcon: Icon(Icons.account_circle_outlined, color: Colors.green),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+            SizedBox(height: 15),
+
+            // Email Field
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(
+                labelText: 'Email',
+                prefixIcon: Icon(Icons.email, color: Colors.green),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+            SizedBox(height: 15),
+
+            // Password Field
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Password',
                 prefixIcon: Icon(Icons.lock, color: Colors.green),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-
-            // Confirm Password Input Field
-            TextField(
-              onChanged: (value) {
-                confirmPassword = value; // Capture the confirm password
-              },
-              obscureText: true, // Hide password
-              decoration: InputDecoration(
-                labelText: 'Confirm Password',
-                prefixIcon: Icon(Icons.lock, color: Colors.green),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
             SizedBox(height: 20),
@@ -120,33 +170,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _signUp,
+                onPressed: _isLoading ? null : _signUp,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green, // Button color
-                  foregroundColor: Colors.white, // Text color
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
                   padding: EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: Text(
-                  'Sign Up',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                child: _isLoading
+                    ? CircularProgressIndicator(color: Colors.white)
+                    : Text('Sign Up', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
             ),
             SizedBox(height: 15),
 
-            // Sign In Link
+            // Sign In Redirect
             TextButton(
               onPressed: () {
-                // Navigate back to Sign In screen
                 Navigator.pop(context);
               },
-              child: Text(
-                'Already have an account? Sign In',
-                style: TextStyle(color: Colors.green),
-              ),
+              child: Text("Already have an account? Sign In", style: TextStyle(color: Colors.green)),
             ),
           ],
         ),
