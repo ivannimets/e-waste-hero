@@ -93,7 +93,9 @@ class BinScreenState extends State<BinScreen> {
                           trailing: IconButton(
                             icon: Icon(Icons.delete, color: Colors.red),
                             onPressed: () {
-                              // TODO: Implement delete functionality
+                              setState(() {
+                                binItems.removeAt(index);
+                              });
                             },
                           ),
                         );
