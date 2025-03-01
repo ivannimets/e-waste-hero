@@ -142,7 +142,7 @@ class BinsScreenState extends State<BinsScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => BinScreen(userId: widget.userId),
+                          builder: (context) => BinScreen(userId: widget.userId, binId: binsList[index].binId,),
                         ),
                       );
                     },

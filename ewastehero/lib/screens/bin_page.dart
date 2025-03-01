@@ -8,8 +8,9 @@ import '../entites/item.dart';
 
 class BinScreen extends StatefulWidget {
   final int userId;
+  final int binId;
 
-  BinScreen({required this.userId});
+  BinScreen({required this.userId, required this.binId});
 
   @override
   BinScreenState createState() {
@@ -25,8 +26,8 @@ class BinScreenState extends State<BinScreen> {
   Future<void> fetchBinItems() async {
     bin = Bin.fromMap(await supabase
         .from('bin')
-        .select('bin_id')
-        .eq('user_id', widget.userId)
+        .select('bin_id, name')
+        .eq('bin_id', widget.binId)
         .single());
 
     final response = await supabase

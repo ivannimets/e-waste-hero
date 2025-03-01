@@ -2,7 +2,9 @@ import 'package:ewastehero/entites/euser.dart';
 import 'package:ewastehero/screens/bin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:ewastehero/screens/base_screen.dart'; // Import BaseScreen
-import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase package
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'bin_list_page.dart'; // Import Supabase package
 
 final supabase = Supabase.instance.client;
 
@@ -192,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     // Navigate to the BinScreen
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => BinScreen(userId: widget.userId)),
+                      MaterialPageRoute(builder: (context) => BinsScreen(userId: widget.userId)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
