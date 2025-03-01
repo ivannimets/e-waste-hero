@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'bin_page.dart';
+import 'home_screen.dart';
+
 class BaseScreen extends StatelessWidget {
   final Widget body;
 
@@ -36,7 +39,10 @@ class BaseScreen extends StatelessWidget {
               icon: Icon(Icons.home),
               iconSize: 40,
               onPressed: () {
-                // Navigate to home screen
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
               },
             ),
             IconButton(
@@ -50,7 +56,10 @@ class BaseScreen extends StatelessWidget {
               icon: Icon(Icons.recycling_outlined),
               iconSize: 40,
               onPressed: () {
-                // Navigate to rewards screen
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => BinScreen()),
+                );
               },
             ),
           ],
