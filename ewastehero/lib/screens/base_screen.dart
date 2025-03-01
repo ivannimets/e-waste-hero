@@ -3,26 +3,29 @@ import 'package:flutter/material.dart';
 class BaseScreen extends StatelessWidget {
   final Widget body;
 
+  // Constructor accepts the body widget to customize content
   BaseScreen({required this.body});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('E-Waste Hero'),
-        backgroundColor: Colors.green,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-            },
+        title: Text(
+          'e-waste hero', // The app title
+          style: TextStyle(
+            fontSize: 45,
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.bold, // Makes the text bold
+            color: Colors.white, // Sets text color to white
           ),
-        ],
+        ),
+        backgroundColor: Colors.green, // The background color of the AppBar
+        centerTitle: true, // Centers the title in the AppBar
       ),
       body: SafeArea(
         child: Column(
           children: [
-            Expanded(child: body),
+            Expanded(child: body), // Accepts the dynamic body for each screen
           ],
         ),
       ),
@@ -32,26 +35,29 @@ class BaseScreen extends StatelessWidget {
           children: [
             IconButton(
               icon: Icon(Icons.home),
-              iconSize: 40.0,
+              iconSize: 40,
               onPressed: () {
+                // Navigate to home screen
               },
             ),
             IconButton(
               icon: Icon(Icons.search),
-              iconSize: 40.0,
+              iconSize: 40,
               onPressed: () {
+                // Navigate to search screen
               },
             ),
             IconButton(
               icon: Icon(Icons.account_circle),
-              iconSize: 40.0,
+              iconSize: 40,
               onPressed: () {
+                // Navigate to profile screen
               },
             ),
             IconButton(
               icon: Icon(Icons.local_offer),
-              iconSize: 40.0,
               onPressed: () {
+                // Navigate to rewards screen
               },
             ),
           ],
