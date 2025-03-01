@@ -1,17 +1,24 @@
 import 'package:ewastehero/screens/base_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../entites/item.dart';
 
-List<Item> binItems = [
-  Item(name: "batteries", quantity: 5),
-  Item(name: "phone"),
-  Item(name: "wire", quantity: 2)
-];
+class Bin {
+  int binId;
+
+  Bin({required this.binId});
+
+  factory Bin.fromMap(Map<String, dynamic> data) {
+    return Bin(
+      binId: data['bin_id'],
+    );
+  }
+}
 
 class BinScreen extends StatefulWidget {
-
   final int userId;
+
   BinScreen({required this.userId});
 
   @override
@@ -21,6 +28,45 @@ class BinScreen extends StatefulWidget {
 }
 
 class BinScreenState extends State<BinScreen> {
+  final supabase = Supabase.instance.client;
+  List<Item> binItems = [];
+  late Bin bin;
+
+  Future<void> fetchBinItems() async {
+    bin = Bin.fromMap(await supabase
+        .from('bin')
+        .select('bin_id')
+        .eq('user_id', widget.userId)
+        .single());
+
+    final response = await supabase
+        .from('bin_line_items')
+        .select('bin_line_item_id, bin_id, item_name, quantity')
+        .eq('bin_id', bin.binId);
+
+    if (response.isNotEmpty) {
+      setState(() {
+        binItems = response.map((item) => Item.fromMap(item)).toList();
+      });
+    }
+  }
+
+  Future<void> changeItemQuantity(Item lineItem, int increment) async {
+    await supabase.from('bin_line_items').update({'quantity': lineItem.quantity + increment}).eq('bin_line_item_id', lineItem.itemId);
+    fetchBinItems();
+  }
+
+  Future<void> deleteLineItem(Item lineItem) async {
+    await supabase.from('bin_line_items').delete().eq('bin_line_item_id', lineItem.itemId);
+    fetchBinItems();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchBinItems(); // Ensure items are fetched when screen loads
+  }
+
   // Function to show dialog to add new item
   void _showAddItemDialog() {
     String itemName = '';
@@ -44,7 +90,8 @@ class BinScreenState extends State<BinScreen> {
                 decoration: InputDecoration(labelText: 'Quantity'),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
-                  itemQuantity = int.tryParse(value) ?? 1; // Default to 1 if invalid input
+                  itemQuantity =
+                      int.tryParse(value) ?? 1; // Default to 1 if invalid input
                 },
               ),
             ],
@@ -57,11 +104,21 @@ class BinScreenState extends State<BinScreen> {
               child: Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 if (itemName.isNotEmpty) {
-                  setState(() {
-                    binItems.add(Item(name: itemName, quantity: itemQuantity));
-                  });
+                  try {
+                    await supabase.from('bin_line_items').insert({
+                      'bin_id': bin.binId,
+                      'item_name': itemName,
+                      'quantity': itemQuantity
+                    });
+
+                    print("item inserted successfully");
+                    fetchBinItems();
+                  } catch (e) {
+                    print("Error inserting item: $e");
+                  }
+
                   Navigator.pop(context); // Close the dialog
                 }
               },
@@ -97,67 +154,61 @@ class BinScreenState extends State<BinScreen> {
             Expanded(
               child: binItems.isEmpty
                   ? Center(
-                child: Text(
-                  'You have nothing in your bin',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              )
-                  : ListView.separated(
-                itemCount: binItems.length,
-                separatorBuilder: (context, index) =>
-                    Divider(color: Colors.grey[300]),
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: Icon(Icons.recycling, color: Colors.green),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "${binItems[index].name}",
-                          style: TextStyle(fontSize: 18),
+                      child: Text(
+                        'You have nothing in your bin',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey[600],
                         ),
-                        Row(
-                          children: [
-                            if (binItems[index].quantity > 1)
-                              IconButton(
-                                icon: Icon(Icons.remove,
-                                    color: Colors.green),
-                                onPressed: () {
-                                  setState(() {
-                                    binItems[index].ChanegeQuantity(-1);
-                                  });
-                                },
+                      ),
+                    )
+                  : ListView.separated(
+                      itemCount: binItems.length,
+                      separatorBuilder: (context, index) =>
+                          Divider(color: Colors.grey[300]),
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          leading: Icon(Icons.recycling, color: Colors.green),
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                binItems[index].itemName,
+                                style: TextStyle(fontSize: 18),
                               ),
-                            Text(
-                              "${binItems[index].quantity}",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.add, color: Colors.green),
-                              onPressed: () {
-                                setState(() {
-                                  binItems[index].ChanegeQuantity(1);
-                                });
-                              },
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
-                        setState(() {
-                          binItems.removeAt(index);
-                        });
+                              Row(
+                                children: [
+                                  if (binItems[index].quantity > 1)
+                                    IconButton(
+                                      icon: Icon(Icons.remove,
+                                          color: Colors.green),
+                                      onPressed: () {
+                                        changeItemQuantity(binItems[index], -1);
+                                      },
+                                    ),
+                                  Text(
+                                    "${binItems[index].quantity}",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.add, color: Colors.green),
+                                    onPressed: () {
+                                      changeItemQuantity(binItems[index], 1);
+                                    },
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              deleteLineItem(binItems[index]);
+                            },
+                          ),
+                        );
                       },
                     ),
-                  );
-                },
-              ),
             ),
 
             SizedBox(height: 20),
