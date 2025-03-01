@@ -4,7 +4,6 @@ class EUser {
   final String lastName;
   final String email;
   final int experience;
-  final int binId;
 
   EUser({
     required this.username,
@@ -12,7 +11,6 @@ class EUser {
     required this.lastName,
     required this.email,
     required this.experience,
-    required this.binId,
   });
 
   // Factory method to create a User object from a Map
@@ -23,7 +21,6 @@ class EUser {
       lastName: map['last_name'] ?? 'N/A',
       email: map['email'] ?? 'N/A',
       experience: map['experience'] ?? 0,
-      binId: map['bin_id'] ?? 'N/A',
     );
   }
 
@@ -35,7 +32,6 @@ class EUser {
       'last_name': lastName,
       'email': email,
       'experience': experience,
-      'bin_id': binId,
     };
   }
 }

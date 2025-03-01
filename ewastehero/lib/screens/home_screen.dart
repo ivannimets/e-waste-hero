@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final response = await supabase
           .from('users')
-          .select('username, first_name, last_name, email, experience, bin_id')
+          .select('username, first_name, last_name, email, experience')
           .eq('user_id', userId)
           .single();
 
@@ -37,8 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
           firstName: response['first_name'],
           lastName: response['last_name'],
           email: response['email'],
-          experience: response['experience'],
-          binId: response['bin_id']);
+          experience: response['experience']);
     } catch (e) {
       throw Exception('Error loading user data: $e');
     }
