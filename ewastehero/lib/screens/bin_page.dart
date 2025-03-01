@@ -3,9 +3,20 @@ import 'package:flutter/material.dart';
 
 import '../entites/item.dart';
 
-class BinScreen extends StatelessWidget {
-  List<Item> binItems = [new Item(name: "batteries", quantity: 5), new Item(name: "phone"), new Item(name: "wire", quantity: 2)]; // List of bin items
+List<Item> binItems = [
+  new Item(name: "batteries", quantity: 5),
+  new Item(name: "phone"),
+  new Item(name: "wire", quantity: 2)
+];
 
+class BinScreen extends StatefulWidget {
+  @override
+  BinScreenState createState() {
+    return BinScreenState();
+  }
+}
+
+class BinScreenState extends State<BinScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
@@ -29,36 +40,65 @@ class BinScreen extends StatelessWidget {
             Expanded(
               child: binItems.isEmpty
                   ? Center(
-                child: Text(
-                  'You have nothing in your bin',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              )
+                      child: Text(
+                        'You have nothing in your bin',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    )
                   : ListView.separated(
-                itemCount: binItems.length,
-                separatorBuilder: (context, index) =>
-                    Divider(color: Colors.grey[300]),
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: Icon(Icons.recycling, color: Colors.green),
-                    title: Text(
-                      binItems[index].quantity == 1 ?
-                      "${binItems[index].name}" :
-                      "${binItems[index].name} x ${binItems[index].quantity}",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
-                        // TODO: Implement delete functionality
+                      itemCount: binItems.length,
+                      separatorBuilder: (context, index) =>
+                          Divider(color: Colors.grey[300]),
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          leading: Icon(Icons.recycling, color: Colors.green),
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "${binItems[index].name}",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              Row(
+                                children: [
+                                  if (binItems[index].quantity > 1)
+                                    IconButton(
+                                      icon: Icon(Icons.remove,
+                                          color: Colors.green),
+                                      onPressed: () {
+                                        setState(() {
+                                          binItems[index].ChanegeQuantity(-1);
+                                        });
+                                      },
+                                    ),
+                                  Text(
+                                    "${binItems[index].quantity}",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.add, color: Colors.green),
+                                    onPressed: () {
+                                      setState(() {
+                                        binItems[index].ChanegeQuantity(1);
+                                      });
+                                    },
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              // TODO: Implement delete functionality
+                            },
+                          ),
+                        );
                       },
                     ),
-                  );
-                },
-              ),
             ),
 
             SizedBox(height: 20),
