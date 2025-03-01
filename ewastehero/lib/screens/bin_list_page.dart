@@ -1,8 +1,6 @@
 import 'package:ewastehero/screens/base_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-import '../entites/bin.dart';
 import 'bin_page.dart';
 
 
