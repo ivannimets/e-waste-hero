@@ -19,8 +19,7 @@ class BaseScreen extends StatelessWidget {
             color: Colors.white, // Sets text color to white
           ),
         ),
-        backgroundColor: Colors.green, // The background color of the AppBar
-        centerTitle: true, // Centers the title in the AppBar
+        backgroundColor: Colors.green, // The background color of the AppBarCenters the title in the AppBar
       ),
       body: SafeArea(
         child: Column(
@@ -56,6 +55,7 @@ class BaseScreen extends StatelessWidget {
             ),
             IconButton(
               icon: Icon(Icons.local_offer),
+              iconSize: 40,
               onPressed: () {
                 // Navigate to rewards screen
               },
