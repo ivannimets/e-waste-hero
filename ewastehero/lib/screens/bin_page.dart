@@ -121,6 +121,86 @@ class BinScreenState extends State<BinScreen> {
     );
   }
 
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
+  }
+
+  void _showSucces(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.green),
+    );
+  }
+
+  void _showAddFriendDialog() {
+    String friendName = '';
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Invite Friend'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(labelText: 'Friend Name'),
+                onChanged: (value) {
+                  friendName = value;
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog without adding
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (friendName.isNotEmpty) {
+                  try {
+                    final response = await supabase
+                        .from('users')
+                        .select('user_id')
+                        .eq('username', friendName)
+                        .maybeSingle();
+
+                    if (response == null) {
+                      _showError('Friend not found');
+                      Navigator.pop(context);
+                      return;
+                    }
+                    else {
+                      await supabase.from('notification').insert({
+                        'bin_id': bin.binId,
+                        'bin_name': bin.name,
+                        'sender_id': widget.userId,
+                        'receiver_id': response['user_id']
+                      });
+                    }
+
+                    print("friend invited successfully");
+                    _showSucces("Friend Invited successfully");
+                    fetchBinItems();
+                  } catch (e) {
+                    print("Error inviting friend: $e");
+                  }
+
+                  Navigator.pop(context); // Close the dialog
+                }
+              },
+              child: Text('invite'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
@@ -130,14 +210,30 @@ class BinScreenState extends State<BinScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+
             // Title
-            Text(
-              'Your Bin',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
-              ),
+            Stack(
+              children: [
+                Text(
+                  'Your Bin',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BinScreen(userId: widget.userId, binId: bin.binId,),
+                      ),
+                    ),
+                  }, icon: Icon(Icons.refresh)),
+                ),
+              ],
             ),
             SizedBox(height: 20),
 
@@ -205,21 +301,41 @@ class BinScreenState extends State<BinScreen> {
             SizedBox(height: 20),
 
             // Button to Add Items
-            ElevatedButton(
-              onPressed: _showAddItemDialog, // Show the dialog to add an item
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green, // Button color
-                foregroundColor: Colors.white, // Text color
-                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: _showAddItemDialog, // Show the dialog to add an item
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green, // Button color
+                    foregroundColor: Colors.white, // Text color
+                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    'Add to Bin',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              child: Text(
-                'Add to Bin',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
+                ElevatedButton(
+                  onPressed: _showAddFriendDialog, // Show the dialog to add an item
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green, // Button color
+                    foregroundColor: Colors.white, // Text color
+                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    'Invite friend',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),
