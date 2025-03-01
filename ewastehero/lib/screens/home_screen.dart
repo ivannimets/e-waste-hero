@@ -108,57 +108,7 @@ class HomeScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: // Map or Nearby Locations
-            Container(
-              height: 150,
-              width: double.infinity,
-              color: Colors.green[100],
-              child: Center(
-                child: Text(
-                  'Find Nearby Recycling Locations',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-
-            // Leaderboard / Challenges Section
-            Container(
-              color: Colors.green[50],
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Leaderboard',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green[700],
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      'You are ranked #3 in your community!',
-                      style: TextStyle(
-                        fontSize: 16,
                         color: Colors.grey[700],
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Challenges: Recycle 10 items this week to earn extra points!',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.green[800],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 20),Colors.grey[700],
                       ),
                     ),
                   ],
