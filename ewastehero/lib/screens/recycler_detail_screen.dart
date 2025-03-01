@@ -9,7 +9,7 @@ class RecyclingCenterDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Generate a random "Estimated Bin Price" value
-    final randomPrice = (50 + (100 * (0.5 + (0.5 * (new DateTime.now().second / 60))))).toStringAsFixed(2);
+    final randomPrice = (50 + (10 * (0.5 + (0.5 * (new DateTime.now().second / 60))))).toStringAsFixed(2);
 
     return Scaffold(
       appBar: AppBar(
