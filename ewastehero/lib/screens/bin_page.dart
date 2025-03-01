@@ -1,10 +1,10 @@
 import 'package:ewastehero/screens/base_screen.dart';
 import 'package:flutter/material.dart';
 
-class BinScreen extends StatelessWidget {
-  final List<String> binItems; // List of bin items
+import '../entites/item.dart';
 
-  BinScreen({this.binItems = const ["Battery", "Testing"]}); // Default to an empty bin
+class BinScreen extends StatelessWidget {
+  List<Item> binItems = [new Item(name: "batteries", quantity: 5), new Item(name: "phone"), new Item(name: "wire", quantity: 2)]; // List of bin items
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,9 @@ class BinScreen extends StatelessWidget {
                   return ListTile(
                     leading: Icon(Icons.recycling, color: Colors.green),
                     title: Text(
-                      binItems[index],
+                      binItems[index].quantity == 1 ?
+                      "${binItems[index].name}" :
+                      "${binItems[index].name} x ${binItems[index].quantity}",
                       style: TextStyle(fontSize: 18),
                     ),
                     trailing: IconButton(
