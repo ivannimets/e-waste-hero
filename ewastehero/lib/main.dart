@@ -1,4 +1,5 @@
 import 'package:ewastehero/screens/bin_page.dart';
+import 'package:ewastehero/screens/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 import 'screens/login_screen.dart'; // Import your HomeScreen
