@@ -46,7 +46,7 @@ class _SignInScreenState extends State<SignInScreen> {
       if (dbPassword == hashedPassword) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => HomeScreen(userId: response['user_id'])),
         );
       } else {
         _showError('Incorrect password');
