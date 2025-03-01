@@ -28,7 +28,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   /// Create a bin for the user
   Future<int?> createBin(int userId) async {
     final response = await supabase
-        .from('bins')
+        .from('bin')
         .insert({'user_id': userId})
         .select('bin_id')
         .single();
