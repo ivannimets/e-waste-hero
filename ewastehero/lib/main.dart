@@ -1,24 +1,52 @@
-import 'package:ewastehero/screens/bin_page.dart';
-import 'package:ewastehero/screens/search_screen.dart';
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
-import 'screens/login_screen.dart'; // Import your HomeScreen
+import 'dart:convert';
+import 'package:flutter/services.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'screens/login_screen.dart';
 
-void main() {
-  runApp(EWasteHeroApp()); // Run the app
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Load configuration before app starts
+  await Config.loadConfig();
+
+  // Initialize Supabase
+  await Supabase.initialize(
+    url: Config.supabaseUrl,
+    anonKey: Config.supabaseKey,
+  );
+
+  runApp(EWasteHeroApp());
+}
+
+class Config {
+  static String supabaseUrl = '';
+  static String supabaseKey = '';
+
+  static Future<void> loadConfig() async {
+    // Load the config.json file from assets
+    String configString = await rootBundle.loadString('assets/config.json');
+
+    // Decode the JSON string into a map
+    Map<String, dynamic> configMap = jsonDecode(configString);
+
+    // Set the Supabase credentials from the config file
+    supabaseUrl = configMap['supabaseUrl'];
+    supabaseKey = configMap['supabaseKey'];
+  }
 }
 
 class EWasteHeroApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'E-Waste Hero', // Title of the app
+      title: 'E-Waste Hero',
       theme: ThemeData(
-        primarySwatch: Colors.green, // Main color of the app
-        fontFamily: 'Roboto', // Default font family for the app
+        primarySwatch: Colors.green,
+        fontFamily: 'Roboto',
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SearchScreen(),
+      home: SignInScreen(),
     );
   }
 }
