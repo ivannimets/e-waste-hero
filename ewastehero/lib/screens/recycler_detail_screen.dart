@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../entites/bin.dart';
@@ -60,7 +62,7 @@ class _RecyclingCenterDetailScreenState extends State<RecyclingCenterDetailScree
   }
 
   String randomPrice() {
-    return (50 + (100 * (0.5 + (0.5 * (DateTime.now().second / 60))))).toStringAsFixed(2);
+    return (50 + Random().nextInt(30) + Random().nextDouble()).toStringAsFixed(2);
   }
 
   @override
