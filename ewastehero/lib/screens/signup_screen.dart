@@ -77,10 +77,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final int userId = response['user_id'];
 
     // Create a bin for the user
-    // final int? binId = await createBin(userId);
-    // if (binId != null) {
-    //   await updateUserWithBin(userId, binId);
-    // }
+    final int? binId = await createBin(userId);
+    if (binId != null) {
+      await updateUserWithBin(userId, binId);
+    }
 
     // Navigate to HomeScreen
     Navigator.pushReplacement(
