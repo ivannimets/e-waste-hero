@@ -1,5 +1,6 @@
 import 'package:ewastehero/screens/base_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:ewastehero/screens/recycler_detail_screen.dart';
+import 'package:flutter/material.dart';// Import the new screen
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -12,9 +13,30 @@ class _SearchScreenState extends State<SearchScreen> {
 
   // Sample data for demonstration
   final List<Map<String, String>> sampleCenters = [
-    {"name": "Green Tech Recycling", "address": "123 Green St, Waterloo, ON"},
-    {"name": "E-Waste Solutions", "address": "456 Tech Ave, Kitchener, ON"},
-    {"name": "EcoRecycle Depot", "address": "789 Sustainability Rd, Toronto, ON"},
+    {
+      "name": "Green Tech Recycling",
+      "address": "123 Green St, Waterloo, ON",
+      "phone": "123-456-7890",
+      "distance": "2.5 km",
+      "acceptedWaste": "Computers, Batteries, Phones, Cables",
+      "isVerified": "true"
+    },
+    {
+      "name": "E-Waste Solutions",
+      "address": "456 Tech Ave, Kitchener, ON",
+      "phone": "987-654-3210",
+      "distance": "10.3 km",
+      "acceptedWaste": "Phones, Batteries, Wires",
+      "isVerified": "false"
+    },
+    {
+      "name": "EcoRecycle Depot",
+      "address": "789 Sustainability Rd, Toronto, ON",
+      "phone": "555-123-9876",
+      "distance": "50.1 km",
+      "acceptedWaste": "Computers, Batteries, Phones, Monitors",
+      "isVerified": "true"
+    },
   ];
 
   void searchRecyclingCenters() {
@@ -99,7 +121,15 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                     trailing: Icon(Icons.arrow_forward, color: Colors.green),
                     onTap: () {
-                      // TODO: Implement navigation to details page
+                      // Navigate to the details page with data
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RecyclingCenterDetailScreen(
+                            centerData: recyclingCenters[index],
+                          ),
+                        ),
+                      );
                     },
                   );
                 },
