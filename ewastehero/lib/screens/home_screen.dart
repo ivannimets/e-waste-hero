@@ -108,48 +108,7 @@ class HomeScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.grey[700],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 30),
-
-            // Enlarged "Start Recycling" Button
-            ElevatedButton(
-              onPressed: () {
-                // Add action for button (e.g., navigate to another screen)
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green, // Button background color
-                foregroundColor: Colors.white, // Button text color
-                padding: EdgeInsets.symmetric(vertical: 18, horizontal: 40), // Enlarged padding
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12), // Rounded corners
-                ),
-                elevation: 5, // Shadow effect
-              ),
-              child: Text(
-                'Start Recycling',
-                style: TextStyle(fontSize: 20), // Increased text size
-              ),
-            ),
-            SizedBox(height: 30),
-
-            // E-Waste Impact Information
-            Text(
-              'Did you know? Recycling 1 phone saves 1,000 pounds of CO2!',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.green[800],
-              ),
-            ),
-            SizedBox(height: 20),
-
-            // Map or Nearby Locations
+                        color: // Map or Nearby Locations
             Container(
               height: 150,
               width: double.infinity,
@@ -197,6 +156,45 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+            ),
+            SizedBox(height: 20),Colors.grey[700],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 30),
+
+            // Enlarged "Start Recycling" Button
+            ElevatedButton(
+              onPressed: () {
+                // Add action for button (e.g., navigate to another screen)
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green, // Button background color
+                foregroundColor: Colors.white, // Button text color
+                padding: EdgeInsets.symmetric(vertical: 18, horizontal: 40), // Enlarged padding
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12), // Rounded corners
+                ),
+                elevation: 5, // Shadow effect
+              ),
+              child: Text(
+                'Start Recycling',
+                style: TextStyle(fontSize: 20), // Increased text size
+              ),
+            ),
+            SizedBox(height: 30),
+
+            // E-Waste Impact Information
+            Text(
+              'Did you know? Recycling 1 phone saves 1,000 pounds of CO2!',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.green[800],
               ),
             ),
             SizedBox(height: 20),
