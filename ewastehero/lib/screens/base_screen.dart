@@ -1,3 +1,4 @@
+import 'package:ewastehero/screens/notification_screen.dart';
 import 'package:ewastehero/screens/search_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class BaseScreen extends StatelessWidget {
             color: Colors.white, // Sets text color to white
           ),
         ),
-        backgroundColor: Colors.green, // The background color of the AppBarCenters the title in the AppBar
+        backgroundColor: Colors.green, // The background color of the AppBar
       ),
       body: SafeArea(
         child: Column(
@@ -44,7 +45,7 @@ class BaseScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => HomeScreen(userId: userId,)),
+                  MaterialPageRoute(builder: (context) => HomeScreen(userId: userId)),
                 );
               },
             ),
@@ -54,7 +55,7 @@ class BaseScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => SearchScreen(userId: userId,)),
+                  MaterialPageRoute(builder: (context) => SearchScreen(userId: userId)),
                 );
               },
             ),
@@ -65,6 +66,16 @@ class BaseScreen extends StatelessWidget {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => BinsScreen(userId: userId,)),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.notifications),
+              iconSize: 40,
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => NotificationsScreen(userId: userId)),
                 );
               },
             ),
