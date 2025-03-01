@@ -21,27 +21,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     fetchNotifications();
   }
 
-  Future<String?> getBinNameFromNotification(int notificationId) async {
-    // Fetch the notification to get the bin_id
-    final notification = await supabase
-        .from('notifications')
-        .select('bin_id')
-        .eq('notification_id', notificationId)
-        .single();
-
-    if (notification != null && notification['bin_id'] != null) {
-      // Use the bin_id to fetch the bin name from the bin table
-      final binId = notification['bin_id'];
-      final bin = await supabase.from('bin').select('name').eq('id', binId).single();
-      return bin != null ? bin['name'] : null; // Return the bin name
-    }
-
-    return null; // Return null if no bin found
-  }
-
   Future<void> fetchNotifications() async {
     final response = await supabase
-        .from('notifications')
+        .from('notification')
         .select()
         .eq('receiver_id', widget.userId);
 
@@ -53,14 +35,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Future<void> acceptNotification(int id, int binId) async {
-    await supabase.from('notifications').delete().eq('notification_id', id);
+    await supabase.from('notification').delete().eq('notification_id', id);
     await supabase.from('joining_bin_user').insert({'user_id': widget.userId, 'bin_id': binId});
-    fetchNotifications(); // Refresh list after update
+    WidgetsBinding.instance.addPostFrameCallback((_) => fetchNotifications());
   }
 
   Future<void> denyNotification(int id) async {
-    await supabase.from('notifications').delete().eq('notification_id', id);
-    fetchNotifications(); // Refresh list after update
+    await supabase.from('notification').delete().eq('notification_id', id);
+    WidgetsBinding.instance.addPostFrameCallback((_) => fetchNotifications());
   }
 
   @override
@@ -96,7 +78,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   return Card(
                     margin: EdgeInsets.symmetric(vertical: 8),
                     child: ListTile(
-                      title: Text("You have been invited to join ${getBinNameFromNotification(notification['notification_id'])}"),
+                      title: Text("You have been invited to join ${notification['bin_name']}"),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
