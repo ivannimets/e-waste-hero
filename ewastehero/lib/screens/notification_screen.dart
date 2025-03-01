@@ -38,11 +38,27 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     await supabase.from('notification').delete().eq('notification_id', id);
     await supabase.from('joining_bin_user').insert({'user_id': widget.userId, 'bin_id': binId});
     WidgetsBinding.instance.addPostFrameCallback((_) => fetchNotifications());
+    WidgetsBinding.instance.addPostFrameCallback((_) => {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NotificationsScreen(userId: widget.userId),
+        ),
+      ),
+    });
   }
 
   Future<void> denyNotification(int id) async {
     await supabase.from('notification').delete().eq('notification_id', id);
     WidgetsBinding.instance.addPostFrameCallback((_) => fetchNotifications());
+    WidgetsBinding.instance.addPostFrameCallback((_) => {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NotificationsScreen(userId: widget.userId),
+        ),
+      ),
+    });
   }
 
   @override
