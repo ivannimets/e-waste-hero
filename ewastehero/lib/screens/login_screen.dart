@@ -1,4 +1,3 @@
-import 'package:ewastehero/screens/base_screen.dart';
 import 'package:ewastehero/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -36,13 +35,25 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseScreen(
+    return Scaffold(
+      appBar: null, // No appBar
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            // e-waste hero text
+            Text(
+              'e-waste hero',
+              style: TextStyle(
+                fontSize: 70,
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+              ),
+            ),
+            SizedBox(height: 50),
+
             // Welcome Text
             Text(
               'Welcome Back!',
