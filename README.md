@@ -79,6 +79,34 @@ To manage items and user data, Supabase is used as the backend service. It provi
 - **Data Persistence**: Currently, the app uses Supabase for data storage, ensuring persistence across sessions.
 - **Advanced Filtering**: Implement filtering and sorting for bin items based on categories, dates, or quantity.
 
+### Screenshots
+
+Here are some screenshots of the app in action:
+
+**Login Screen**
+![Login Screen](screenshots/login.png)
+
+**Main Screen**
+![Main Screen](screenshots/main.png)
+
+**Bins Screen**
+![Bins Screen](screenshots/bins.png)
+
+**Bin Screen**
+![Bin Screen](screenshots/bin.png)
+
+**Locations Screen**
+![Locations Screen](screenshots/locations.png)
+
+**Estimations**
+![Estimations](screenshots/estimation.png)
+
+**Notification Screen**
+![Notification Screen](screenshots/notifications.png)
+
+**Invite Friend**
+![Invite Friend](screenshots/invite.png)
+
 ### Contributing
 
 We welcome contributions! If you'd like to contribute to the development of **E-Waste Hero**, please fork the repository and submit a pull request with your changes.
