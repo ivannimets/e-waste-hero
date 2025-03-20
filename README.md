@@ -80,32 +80,32 @@ To manage items and user data, Supabase is used as the backend service. It provi
 - **Advanced Filtering**: Implement filtering and sorting for bin items based on categories, dates, or quantity.
 
 ### Screenshots
-
-Here are some screenshots of the app in action:
-
-**Login Screen**
-(screenshots/login.png)
-
-**Main Screen**
-(screenshots/main.png)
-
-**Bins Screen**
-(screenshots/bins.png)
-
-**Bin Screen**
-(screenshots/bin.png)
-
-**Locations Screen**
-(screenshots/locations.png)
-
-**Estimations**
-(screenshots/estimation.png)
-
-**Notification Screen**
-(screenshots/notifications.png)
-
-**Invite Friend**
-(screenshots/invite.png)
+ 
+ Here are some screenshots of the app in action:
+ 
+ **Login Screen**
+ ![](screenshots/login.png)
+ 
+ **Main Screen**
+ ![](screenshots/main.png)
+ 
+ **Bins Screen**
+ ![](screenshots/bins.png)
+ 
+ **Bin Screen**
+ ![](screenshots/bin.png)
+ 
+ **Locations Screen**
+ ![](screenshots/locations.png)
+ 
+ **Estimations**
+ ![](screenshots/estimation.png)
+ 
+ **Notification Screen**
+ ![](screenshots/notifications.png)
+ 
+ **Invite Friend**
+ ![](screenshots/invite.png)
 
 ### Contributing
 
