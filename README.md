@@ -84,28 +84,28 @@ To manage items and user data, Supabase is used as the backend service. It provi
 Here are some screenshots of the app in action:
 
 **Login Screen**
-![Login Screen](screenshots/login.png)
+(screenshots/login.png)
 
 **Main Screen**
-![Main Screen](screenshots/main.png)
+(screenshots/main.png)
 
 **Bins Screen**
-![Bins Screen](screenshots/bins.png)
+(screenshots/bins.png)
 
 **Bin Screen**
-![Bin Screen](screenshots/bin.png)
+(screenshots/bin.png)
 
 **Locations Screen**
-![Locations Screen](screenshots/locations.png)
+(screenshots/locations.png)
 
 **Estimations**
-![Estimations](screenshots/estimation.png)
+(screenshots/estimation.png)
 
 **Notification Screen**
-![Notification Screen](screenshots/notifications.png)
+(screenshots/notifications.png)
 
 **Invite Friend**
-![Invite Friend](screenshots/invite.png)
+(screenshots/invite.png)
 
 ### Contributing
 
