@@ -26,7 +26,7 @@
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/e-waste-hero.git
+   git clone https://github.com/ivannimets/e-waste-hero.git
    cd e-waste-hero
    ```
 
