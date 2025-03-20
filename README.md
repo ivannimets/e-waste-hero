@@ -20,7 +20,6 @@
 - **Flutter**: Used to build the cross-platform app (Web & Android).
 - **Dart**: Programming language used for building the Flutter application.
 - **Supabase**: Used as the backend for managing user data and item lists.
-- **Provider**: For managing app-wide state (if added in future versions).
 
 ### Getting Started
 
