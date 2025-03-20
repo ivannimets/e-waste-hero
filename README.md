@@ -83,7 +83,7 @@ To manage items and user data, Supabase is used as the backend service. It provi
  
  Here are some screenshots of the app in action:
  
- **Login Screen**
+ #### Login Screen
  ![Login Screen](screenshots/login.png)
  
  **Main Screen**
